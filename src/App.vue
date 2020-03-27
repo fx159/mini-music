@@ -1,9 +1,18 @@
 <template>
   <div id="app">
+    <nav-bar/>
     <router-view/>
   </div>
 </template>
-
+<script>
+import NavBar from '@/components/Navbar'
+export default {
+  name: 'app',
+  components: {
+    NavBar
+  }
+}
+</script>
 <style lang="less">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -15,7 +24,7 @@
 
 #nav {
   padding: 30px;
-
+  margin: @h;
   a {
     font-weight: bold;
     color: #2c3e50;

@@ -8,7 +8,19 @@ export const loadserachhot = () => {
     }).then(res => {
       resolve(res.data.result.hots)
     }).catch(err => {
-      console.log(err)
+      reject(err)
+    })
+  })
+}
+export const loadbanner = (parms) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      url: '/banner',
+      type: parms
+    }).then(res => {
+      resolve(res.data.banners)
+    }).catch(err => {
+      reject(err)
     })
   })
 }
