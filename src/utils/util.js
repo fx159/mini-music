@@ -1,5 +1,4 @@
 export function addclass (el, className) {
-  console.log(el)
   if (hasclass(el, className)) {
     return
   }

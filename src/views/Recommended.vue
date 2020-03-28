@@ -2,7 +2,7 @@
   <div class="about">
     <h1>推荐页</h1>
     <div v-if="banners.length">
-      <div>
+      <!-- 判断是否拿到轮播图数据 -->
     <Loop>
       <div v-for="(banner,index) in banners" :key="`${index}+banner`">
          <a href="#">
@@ -10,7 +10,6 @@
          </a>
       </div>
     </Loop>
-    </div>
     </div>
   </div>
 </template>
