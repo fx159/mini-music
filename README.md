@@ -5,6 +5,8 @@
 1. git clone https://github.com/fx159/mini-music.git
 2. cd mini-music 
 3. npm install
+4. 下载后台服务api模块 
+git submodule update --init --recursive
 4. cd NeteaseCloudMusicApi
 5. npm start 
 6. cd ../
