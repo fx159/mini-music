@@ -19,7 +19,6 @@ export default {
   >div{
     text-align: center;
     width: 25%;
-    height: 100px;
   }
   .router-link-active{
     border-bottom: 1px solid red;

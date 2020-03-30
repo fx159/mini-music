@@ -69,7 +69,7 @@ export default {
       const sliderwidth = this.$refs.scroll.clientWidth
       for (let i = 0; i < this.children.length; i++) {
         const child = this.children[i]
-        addclass(child, 'slider-item')
+        addclass(child, 'scroll-item')
         child.style.width = sliderwidth + 'px'
         width += sliderwidth
       }
@@ -94,6 +94,19 @@ export default {
     if (this.autoplay) {
       this.autoplay()
     }
+    window.addEventListener('resize', () => {
+      if (!this.slider) return
+      this.setloopwidth()
+      this.initloop()
+    })
+  },
+  activated () {
+    this.initloop()
+    this.setloopwidth()
+    this.indots()
+    if (this.autoplay) {
+      this.autoplay()
+    }
   }
 }
 </script>
@@ -108,7 +121,7 @@ export default {
       width: 100%
     }
   }
-  .slider-item{
+  .scroll-item{
     float: left;
     text-align: center;
     overflow: hidden;
