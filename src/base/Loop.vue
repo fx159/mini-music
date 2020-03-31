@@ -113,6 +113,7 @@ export default {
 <style lang="less" scoped>
 .scroll{
    height: 100%;
+
    position: relative;
   .scroll-group{
     overflow: hidden;

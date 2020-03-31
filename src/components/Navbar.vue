@@ -14,7 +14,12 @@ export default {
 </script>
 <style lang="less" scoped>
 .navbar{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
+  height: 40px;
   justify-content: space-between;
   >div{
     text-align: center;
