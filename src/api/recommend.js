@@ -12,11 +12,12 @@ export const loadserachhot = () => {
     })
   })
 }
+// 轮播组件数据
 export const loadbanner = (type) => {
   return new Promise((resolve, reject) => {
     axios({
       url: '/banner',
-      parms: { type }
+      params: { type }
     }).then(res => {
       resolve(res.data.banners)
     }).catch(err => {
@@ -24,18 +25,33 @@ export const loadbanner = (type) => {
     })
   })
 }
-export const loadplayhot = () => {
+// 推荐歌单数据
+export const loadrecommendlist = (limit) => {
   return new Promise((resolve, reject) => {
     axios({
-      url: '/playlist/hot',
+      url: '/personalized',
+      params: { limit },
       method: 'get'
     }).then(res => {
-      resolve(res.data.tags)
+      resolve(res.data)
     }).catch(err => {
       reject(err)
     })
   })
 }
+export const loadnewmusic = () => {
+  return new Promise((resolve, reject) => {
+    axios({
+      url: '/personalized/newsong',
+      method: 'get'
+    }).then(res => {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+// 歌单详情数据
 export const loaddetail = (id) => {
   return new Promise((resolve, reject) => {
     axios({

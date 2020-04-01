@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="singer">
     歌手页面
   </div>
 </template>

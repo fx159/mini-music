@@ -16,4 +16,9 @@ export default {
 }
 </script>
 <style lang="less">
+#app{
+  height: 100%;
+  width: 100%;
+  background-color: @bgc;
+}
 </style>

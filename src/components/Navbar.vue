@@ -20,7 +20,9 @@ export default {
   width: 100%;
   display: flex;
   height: 40px;
+  line-height: 40px;
   justify-content: space-between;
+  z-index: 999;
   >div{
     text-align: center;
     width: 25%;

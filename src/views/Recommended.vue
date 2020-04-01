@@ -1,6 +1,6 @@
 <template>
   <div class="recommended">
-    <Scroll :data = "loadimg" class="scroll-content" ref="scroll">
+    <Scroll :data = "recommendlist" class="scroll-content" ref="scroll">
     <div>
     <div v-if="banners.length">
       <!-- 判断是否拿到轮播图数据 -->
@@ -12,29 +12,34 @@
       </div>
     </Loop>
     </div>
-    <div style="text-align:center">热门推荐</div>
-      <div class="recommend">
-      <div class="recommend-left">
-      <div v-for="(list,index) in loadname" :key="index" class="recommend-name">
-           {{list.name}}
+    <div>
+      <h2 class="recommend-title">热门推荐</h2>
+    </div>
+    <div class="recommend-list">
+      <div v-for="(list,index) in recommendlist" :key="`${index}+list`" class="list-item">
+        <img v-lazy="list.picUrl" alt="">
+         <p style="">{{list.name}}</p>
       </div>
-      </div>
-      <div class="recommend-right">
-      <div v-for="(item, index) in loadimg" :key="`${index}+img`" class="recommend-img">
-         <div class="img-content">
-           <img v-lazy="item.coverImgUrl" alt="">
-           <div>创作者：{{item.creator.nickname}}</div>
+    </div>
+    <div class="recommend-music">
+       <h2 class="recommend-title">最新音乐</h2>
+       <div v-for="(item, index) in recommendmusic" :key="`${index}+item`" class="music-item">
+         <div class="item-top">{{item.song.name}}
+         <span v-show='item.song.alias.length' style="color:#888">({{item.song.alias[0]}})</span>
          </div>
-      </div>
-      </div>
+         <div class="item-bottom" style="color:#888">
+        <span  v-for="(artist,index) in item.song.artists" :key="`${index}+artist`"><i v-show="index>0">/</i>{{artist.name}}</span>
+         {{item.song.album.name}}
+          </div>
+       </div>
     </div>
     </div>
     </Scroll>
-    <div class="load-img"><load v-show="!loadimg.length"></load></div>
+    <div class="load-img"><load v-show="!recommendmusic.length"></load></div>
   </div>
 </template>
 <script>
-import { loadbanner, loadplayhot, loaddetail } from '@/api/api'
+import { loadbanner, loadrecommendlist, loadnewmusic } from '@/api/recommend'
 import Loop from '@/base/Loop'
 import Scroll from '@/base/Scroll'
 import load from '@/base/loading.vue'
@@ -43,40 +48,56 @@ export default {
   data () {
     return {
       banners: [],
-      loadimg: [],
-      loadname: {},
-      loadid: []
+      recommendlist: [],
+      recommendmusic: [],
+      limit: 6
     }
   },
   methods: {
-    loadrecommend () {
-      loadplayhot().then(data => {
-        for (let i = 0; i < data.length; i++) {
-          this.loadid[i] = data[i]
-          this.loadname[i] = Object.assign({}, this.loadid[i].playlistTag)
-          loaddetail(this.loadid[i].id).then(data => {
-            this.loadimg.push(data.playlist)
-          })
-        }
-        this.loadname = Object.assign({}, this.loadname)
+    loadbannerd () {
+      loadbanner().then(data => {
+        this.banners = data
       })
     },
+    loadrecommend () {
+      loadrecommendlist(this.limit).then(data => {
+        this.recommendlist = data.result
+        console.log(this.recommendlist)
+      })
+    },
+    loadmusic () {
+      loadnewmusic().then(data => {
+        console.log(data)
+        this.recommendmusic = data.result
+      })
+    },
+    // loadrecommend () {
+    //   loadplayhot().then(data => {
+    //     for (let i = 0; i < data.length; i++) {
+    //       this.loadid[i] = data[i]
+    //       this.loadname[i] = Object.assign({}, this.loadid[i].playlistTag)
+    //       loaddetail(this.loadid[i].id).then(data => {
+    //         this.loadimg.push(data.playlist)
+    //       })
+    //     }
+    //     this.loadname = Object.assign({}, this.loadname)
+    //   })
+    // },
     // eslint-disable-next-line vue/no-dupe-keys
     loadbannerimg () {
       if (!this.chickout) {
         this.$refs.scroll.refresh()
-        console.log(1)
         this.chickout = true
       }
     }
   },
   created () {
-    loadbanner().then(data => {
-      this.banners = data
-    })
-    setTimeout(() => {
-      this.loadrecommend()
-    }, 2000)
+    this.loadbannerd()
+    this.loadrecommend()
+    this.loadmusic()
+    // setTimeout(() => {
+    //   this.loadrecommend()
+    // }, 2000)
   },
   mounted () {
   },
@@ -89,15 +110,75 @@ export default {
 </script>
 <style lang="less" scoped>
 .recommended{
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  left: 0;
-  top:40px;
   .scroll-content{
     width: 100%;
+    position: absolute;
+    top:40px;
     overflow: hidden;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+  }
+  .recommend-list{
+     display: flex;
+     height: 100%;
+     width: 100%;
+     flex-wrap: wrap ;
+     justify-content: space-between;
+   .list-item{
+     width: 33%;
+     padding: 2px;
+     box-sizing: border-box;
+     p{
+       font-size:13px;
+       overflow:hidden;
+       height:38px;
+       display: -webkit-box;
+       -webkit-box-orient: vertical;
+       -webkit-line-clamp: 2;
+     }
+     img{
+       width: 100%;
+     }
+   }
+  }
+  .recommend-music{
+    .music-item{
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+      .item-top{
+      display: flex;
+      overflow:hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+    }
+    .item-bottom{
+     color: rgb(136, 136, 136);
+     font-size: 12px;
+     overflow:hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+    }
+    }
+  }
+}
+.recommend-title{
+  position: relative;
+  height: 20px;
+  line-height: 20px;
+  font-size: 17px;
+  padding-left: 9px;
+  margin-bottom: 14px;
+  &:after{
+    content: '';
+    position: absolute;
+    top:50%;
+    left: 0;
+    width: 2px;
+    margin-top: -7px;
+    height: 16px;
+    background-color: red;
   }
 }
 .load-img{
@@ -110,43 +191,5 @@ export default {
   height: 100%;
   display: flex;
   position: relative;
-  background-color: @bgc;
-   .recommend-left{
-     flex: 0 auto 50px;
-     color: @font;
-     text-align: center;
-     line-height: 100px;
-   }
-  .recommend-name{
-    min-height: 120px;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-    display: flex;
-    flex-flow: column;
-  }
-  .recommend-right{
-    .recommend-img{
-     width: 300px;
-     height: 120px;
-     display: flex;
-     border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
-     line-height: 100px;
-     flex-flow: column;
-     overflow: hidden;
-     position: relative;
-     .img-content{
-      position: absolute;
-      left: 0;
-      top:0;
-      display: flex;
-       img{
-         width: 100px;
-         height: 100px;
-       }
-     }
-  }
-  }
-
 }
 </style>
