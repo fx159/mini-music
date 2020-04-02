@@ -4,7 +4,7 @@
        <slot></slot>
     </div>
     <div class="dots">
-      <span class="dot" @click="selectdot(index)" v-for="(item, index) in dots" :class="{active: currtindex===index}" :key="index"></span>
+      <span class="dot" @touchstart="selectdot(index)" v-for="(item, index) in dots" :class="{active: currtindex===index}" :key="index"></span>
     </div>
   </div>
 </template>
@@ -96,7 +96,7 @@ export default {
     }
     window.addEventListener('resize', () => {
       if (!this.slider) return
-      this.setloopwidth()
+      // this.setloopwidth()
       this.initloop()
     })
   },
@@ -113,7 +113,6 @@ export default {
 <style lang="less" scoped>
 .scroll{
    height: 100%;
-
    position: relative;
   .scroll-group{
     overflow: hidden;

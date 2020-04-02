@@ -1,4 +1,4 @@
-import axios from '../request/index'
+import axios from '@/request/index'
 
 export const loadserachhot = () => {
   return new Promise((resolve, reject) => {
@@ -39,6 +39,7 @@ export const loadrecommendlist = (limit) => {
     })
   })
 }
+// 推荐音乐歌单
 export const loadnewmusic = () => {
   return new Promise((resolve, reject) => {
     axios({
