@@ -1,9 +1,12 @@
 <template>
   <div class="singer">
-    <scroll class="singer-scroll">
-    <div>
+    <scroll class="singer-scroll" ref="singerscroll">
+    <div class="singer-list" ref="singerlist" @touchstart='hover'  @touchend='offhover' @touchmove='itemmove'>
        <h2 class="singer-title" style="font-size:16px">热门歌手TOP100</h2>
-       <div v-for="(list, index) in singerlists" :key="index" class="singer-item" @touchstart='hover' @touchend='offhover'>
+       <div v-for="(list, index) in singerlists"
+       :key="index" ref="listitem"
+       :data-index='index'
+       class="singer-item">
          <span style="margin-left:0;margin-right:20px">{{index+1}}</span>
          <img v-lazy="list.img1v1Url" alt="">
          <span>{{list.name}}</span>
@@ -12,6 +15,9 @@
     </scroll>
     <div class="load-img">
       <load v-show="!singerlists.length"></load>
+    </div>
+    <div class="singer-tip" ref="singertip" v-show="show" @touchstart ='gototop'>
+      ↑
     </div>
   </div>
 </template>
@@ -26,23 +32,43 @@ export default {
   data () {
     return {
       limit: 100,
-      singerlists: []
+      singerlists: [],
+      show: false
     }
   },
   methods: {
     loadsingerdata () {
       loadsinger(this.limit).then(data => {
         this.singerlists = data.artists
-        console.log(this.singerlists)
       })
     },
     hover (e) {
-      const event = e.target
-      if (e.target.className.indexOf('active') === 12) return
-      addclass(event, ' active')
+      this.item.y1 = e.targetTouches[0].pageY
+      // console.log(e.targetTouches[0].pageY)
+      if (e.target.className === 'singer-item') {
+        // console.log(e.targetTouches[0].pageY)
+        if (e.target.className.indexOf('active') === 12) return
+        addclass(e.target, ' active')
+      }
+    },
+    itemmove (e) {
+      // console.log(e.targetTouches[0].pageY)
+      this.item.y2 = e.targetTouches[0].pageY
+      const scroll = this.item.y2 - this.item.y1
+      if (scroll < 0) {
+        this.show = true
+      } else {
+        this.show = false
+      }
     },
     offhover (e) {
-      e.target.className = 'singer-item'
+      if (e.target.className === 'singer-item active') e.target.className = 'singer-item'
+
+      // this.$refs.singerscroll.scrolltoelement(this.$refs.listitem[index - 2], 0)
+    },
+    gototop () {
+      this.$refs.singerscroll.scrollto(0, 0, 3000)
+      this.show = false
     }
   },
   components: {
@@ -51,6 +77,7 @@ export default {
   },
   created () {
     this.loadsingerdata()
+    this.item = {}
   }
 }
 </script>
@@ -92,7 +119,6 @@ export default {
   padding: 18px;
   display: flex;
   border-bottom: 1px #ccc solid;
-
   span{
     display: inline-block;
     line-height: 50px;
@@ -102,14 +128,25 @@ export default {
   img{
     height: 50px;
     flex: 0 auto 50px;
-    border-radius: 5  0px;
+    border-radius: 50px;
   }
 }
+
 .load-img{
   position: absolute;
   top:50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
 }
+}
+.singer-tip{
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  height: 20px;
+  width: 20px;
+  background-color: red;
+  overflow: hidden;
+  text-align: center;
 }
 </style>

@@ -95,11 +95,6 @@ export default {
     this.loadbannerd()
     this.loadrecommend()
     this.loadmusic()
-    // setTimeout(() => {
-    //   this.loadrecommend()
-    // }, 2000)
-  },
-  mounted () {
   },
   components: {
     Loop,
