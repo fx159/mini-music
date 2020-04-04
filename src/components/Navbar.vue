@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar">
+  <div class="navbar"  v-if="show">
     <div><router-link tag="span" :to="{path:'/recommended'}">推荐</router-link></div>
     <div><router-link tag="span" :to="{path:'/singer'}">歌手</router-link></div>
     <div><router-link tag="span" :to="{path:'/ranking'}">排行</router-link></div>
@@ -9,7 +9,21 @@
 
 <script>
 export default {
-  name: 'Navbar'
+  name: 'Navbar',
+  data () {
+    return {
+      show: true
+    }
+  },
+  watch: {
+    $route (to) {
+      if (to.name === 'Singermusic') {
+        this.show = false
+      } else {
+        this.show = true
+      }
+    }
+  }
 }
 </script>
 <style lang="less" scoped>

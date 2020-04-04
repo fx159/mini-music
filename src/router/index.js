@@ -26,7 +26,12 @@ const routes = [
   {
     path: '/singer',
     name: 'Singer',
-    component: () => import('@/views/Singer.vue')
+    component: () => import('@/views/Singer.vue'),
+    children: [{
+      path: ':id',
+      name: 'Singermusic',
+      component: () => import('../components/Singermusic.vue')
+    }]
   }
 ]
 
