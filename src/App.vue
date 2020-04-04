@@ -21,4 +21,5 @@ export default {
   width: 100%;
   background-color: @bgc;
 }
+
 </style>

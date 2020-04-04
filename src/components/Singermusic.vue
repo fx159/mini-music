@@ -1,23 +1,11 @@
 <template>
   <div class="singer-music">
-    <div class="singer-img" v-if="artists.img1v1Url" :style="{'backgroundImage': `url(${artists.img1v1Url})`,backgroundSize:'100% ',backgroundRepeat:'no-repeat'}">
-      <!-- <img :src="artists.img1v1Url" alt="" width="100%"> -->
-      <div class="singer-descrtion">
-        <span>{{artists.name}}</span>
-      </div>
-    </div>
-    <scroll class="hotsong-list">
-      <div>
-        <div v-for="(hotsong, index) in hotsongs" :key="index">
-          {{hotsong.name}}
-        </div>
-      </div>
-    </scroll>
+    <list-music :img ="artists.img1v1Url" :title="artists.name" :song="hotsongs"></list-music>
   </div>
 </template>
 <script>
 import { loadsingermusic } from '@/api/singer'
-import scroll from '@/base/Scroll'
+import ListMusic from '@/base/ListMusic'
 export default {
   name: 'Singermisic',
   data () {
@@ -25,12 +13,6 @@ export default {
       lists: [],
       artists: '',
       hotsongs: []
-    }
-  },
-  computed: {
-    // eslint-disable-next-line vue/return-in-computed-property
-    descr () {
-      return this.artists.briefDesc.substr(0, 32)
     }
   },
   methods: {
@@ -43,7 +25,7 @@ export default {
     }
   },
   components: {
-    scroll
+    ListMusic
   },
   created () {
     this.loadmusiclist()
@@ -72,7 +54,7 @@ export default {
   }
   .hotsong-list{
     position:absolute;
-    top:300px;
+    top:20px;
     width:100%;
     overflow:hidden;
     right:0;

@@ -96,23 +96,24 @@ export default {
     }
     window.addEventListener('resize', () => {
       if (!this.slider) return
-      // this.setloopwidth()
+      this.setloopwidth()
       this.initloop()
     })
   },
   activated () {
-    this.initloop()
-    this.setloopwidth()
-    this.indots()
-    if (this.autoplay) {
-      this.autoplay()
-    }
+    // this.initloop()
+    // this.setloopwidth()
+    // this.indots()
+    // if (this.autoplay) {
+    //   this.autoplay()
+    // }
   }
 }
 </script>
 <style lang="less" scoped>
 .scroll{
-   height: 100%;
+   min-height: 1px;
+   max-height: 300px;
    position: relative;
   .scroll-group{
     overflow: hidden;
