@@ -1,5 +1,5 @@
 <template>
-  <div ref='scroll' >
+  <div ref='scroll'>
     <slot></slot>
   </div>
 </template>
@@ -14,15 +14,22 @@ export default {
     },
     probeType: {
       type: Number,
-      default: 1
+      default: 3
     }
   },
   methods: {
+    scoll () {
+      this.$emit('scoll', this.posy)
+    },
     initscroll () {
       if (!this.$refs.scroll) return
       this.scroll = new Bscroll(this.$refs.scroll, {
         probeType: this.probeType,
         click: true
+      })
+      this.scroll.on('scroll', ({ x, y }) => {
+        this.scoll()
+        this.posy = y
       })
     },
     enable () {
@@ -49,6 +56,7 @@ export default {
     }
   },
   mounted () {
+    this.scoll()
     this.$nextTick(() => {
       this.initscroll()
     })

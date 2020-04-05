@@ -41,24 +41,5 @@ export default {
   left: 0;
   background-color: @bgc;
   z-index: 100;
-  .singer-img{
-    height: 280px;
-    width: 100%;
-    position: relative;
-    color:#fff
-  }
-  .singer-descrtion{
-    position: absolute;
-    left: 20px;
-    bottom: 50px;
-  }
-  .hotsong-list{
-    position:absolute;
-    top:20px;
-    width:100%;
-    overflow:hidden;
-    right:0;
-    bottom:0
-  }
 }
 </style>

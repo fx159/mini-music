@@ -1,24 +1,31 @@
 <template>
-  <scroll class="hotsong-list">
-    <div>
-    <div class="singer-img" v-if="img" :style="{'backgroundImage': `url(${img})`,backgroundSize:'100% ',backgroundRepeat:'no-repeat'}">
+    <div ref ="parent" class="singer-item">
+    <div class="singer-img"  ref="img" :style="{'backgroundImage': `url(${img})`,backgroundSize:'cover',backgroundRepeat:'no-repeat'}">
       <!-- <img :src="artists.img1v1Url" alt="" width="100%"> -->
       <div class="singer-descrtion">
         <span>{{title}}</span>
       </div>
+       <div class="filter"></div>
     </div>
-      <div>
-        <div v-for="(hotsong, index) in song" :key="index">
+    <div class="push-list" ref="push"></div>
+    <scroll class="hotsong-list" ref="list" :data ="song" @scoll="getdata">
+      <div >
+        <div v-for="(hotsong, index) in song" :key="index" class="song-item">
           {{hotsong.name}}
         </div>
     </div>
-    </div>
     </scroll>
+    </div>
 </template>
 <script>
 import scroll from '@/base/Scroll'
 export default {
   name: 'ListMusic',
+  data () {
+    return {
+      posy: ''
+    }
+  },
   props: {
     img: {
       type: String,
@@ -33,6 +40,39 @@ export default {
       default: null
     }
   },
+  mounted () {
+    this.minheight = -this.$refs.img.clientHeight + 40
+    this.imgheight = this.$refs.img.clientHeight
+    this.$nextTick(() => {
+      this.$refs.list.$el.style.top = this.$refs.img.clientHeight + 'px'
+    })
+    document.addEventListener('resize', () => {
+      this.$refs.list.$el.style.top = this.$refs.img.clientHeight + 'px'
+    })
+  },
+  methods: {
+    getdata (vl) {
+      this.posy = vl
+    }
+  },
+  watch: {
+    posy (nvl) {
+      const height = Math.max(nvl, this.minheight)
+      let zindex = 0
+      this.$refs.push.style.height = this.imgheight + 'px'
+      this.$refs.push.style.transform = `translateY(${height}px)`
+      if (nvl < this.minheight) {
+        zindex = 10
+        this.$refs.img.style.paddingTop = 0
+        this.$refs.img.style.height = 40 + 'px'
+        console.log(nvl)
+      } else {
+        this.$refs.img.style.paddingTop = 70 + '%'
+        this.$refs.img.style.height = 0
+      }
+      this.$refs.img.style.zIndex = zindex
+    }
+  },
   components: {
     scroll
   }
@@ -40,22 +80,39 @@ export default {
 </script>
 <style lang="less" scoped>
 .singer-img{
-    height: 280px;
     width: 100%;
+    padding-top: 70%;
+    height: 100%;
     position: relative;
-    color:#fff
+    color:#fff;
+    transform-origin: top;
+  }
+  .filter{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(7,17,27,0.4);
   }
 .singer-descrtion{
     position: absolute;
     left: 20px;
     bottom: 50px;
 }
-  .hotsong-list{
+.hotsong-list{
     position:absolute;
-    top:20px;
     width:100%;
-    overflow:hidden;
+    // overflow:hidden;
     right:0;
     bottom:0
-  }
+}
+.song-item{
+  height: 30px;
+}
+.push-list{
+  position: relative;
+  height: 100%;
+  background-color: @bgc;
+}
 </style>

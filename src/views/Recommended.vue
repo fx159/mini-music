@@ -23,7 +23,7 @@
     </div>
     <div class="recommend-music">
        <h2 class="recommend-title">最新音乐</h2>
-       <div v-for="(item, index) in recommendmusic" :key="`${index}+item`" class="music-item">
+       <div v-for="(item, index) in recommendmusic" :key="`${index}+item`" class="music-item" @touchstart='hover' @touchend='hoverleave'>
          <div class="item-top">{{item.song.name}}
          <span v-show='item.song.alias.length' style="color:#888">({{item.song.alias[0]}})</span>
          </div>
@@ -43,6 +43,7 @@ import { loadbanner, loadrecommendlist, loadnewmusic } from '@/api/recommend'
 import Loop from '@/base/Loop'
 import Scroll from '@/base/Scroll'
 import load from '@/base/loading.vue'
+import { addclass } from '@/utils/util'
 export default {
   name: 'Recommended',
   data () {
@@ -54,6 +55,16 @@ export default {
     }
   },
   methods: {
+    hover (e) {
+      if (e.target.className === 'music-item') {
+        // console.log(e.targetTouches[0].pageY)
+        if (e.target.className.indexOf('active') === 11) return
+        addclass(e.target, ' active')
+      }
+    },
+    hoverleave (e) {
+      if (e.target.className === 'music-item active') e.target.className = 'music-item'
+    },
     loadbannerd () {
       loadbanner().then(data => {
         this.banners = data
@@ -140,15 +151,19 @@ export default {
     .music-item{
       border-bottom: 1px solid #ccc;
       padding: 10px;
+      height: 40px;
+      width: 100%;
       .item-top{
       display: flex;
       overflow:hidden;
+      width: 40%;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 1;
     }
     .item-bottom{
      color: rgb(136, 136, 136);
+     width: 50%;
      font-size: 12px;
      overflow:hidden;
       display: -webkit-box;
@@ -158,6 +173,9 @@ export default {
     }
   }
 }
+.active{
+    background-color: #ccc;
+  }
 .recommend-title{
   position: relative;
   height: 20px;
