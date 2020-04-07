@@ -4,14 +4,17 @@
     <keep-alive>
     <router-view/>
     </keep-alive>
+    <play-song></play-song>
   </div>
 </template>
 <script>
 import NavBar from '@/components/Navbar'
+import PlaySong from '@/components/PlaySong'
 export default {
   name: 'app',
   components: {
-    NavBar
+    NavBar,
+    PlaySong
   }
 }
 </script>

@@ -1,4 +1,5 @@
 <template>
+  <!-- 热门歌手列表组件 -->
   <div class="list-singer">
   <scroll class="singer-scroll" ref="singerscroll">
     <div class="singer-list" ref="singerlist" @touchstart='hover'  @touchend='offhover' @touchmove='itemmove'>
@@ -145,7 +146,7 @@ export default {
 
 .singer-tip{
   position: fixed;
-  bottom: 10px;
+  bottom: 50px;
   right: 10px;
   height: 20px;
   width: 20px;

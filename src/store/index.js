@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import singer from './mudules/singer'
+import song from './modules/song'
 import getters from './getters'
 
 Vue.use(Vuex)
@@ -14,6 +14,6 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    singer
+    song
   }
 })

@@ -1,16 +1,18 @@
 <template>
+    <!-- 歌手歌单列表组件 -->
     <div ref ="parent" class="singer-item">
     <div class="singer-img"  ref="img" :style="{'backgroundImage': `url(${img})`,backgroundSize:'cover',backgroundRepeat:'no-repeat'}">
       <!-- <img :src="artists.img1v1Url" alt="" width="100%"> -->
       <div class="singer-descrtion">
-        <span>{{title}}</span>
+        <span class="span1" @click="back">返回</span>
+        <span class="span2">{{title}}</span>
       </div>
        <div class="filter"></div>
     </div>
     <div class="push-list" ref="push"></div>
     <scroll class="hotsong-list" ref="list" :data ="song" @scoll="getdata">
       <div >
-        <div v-for="(hotsong, index) in song" :key="index" class="song-item">
+        <div v-for="(hotsong, index) in song" @click="inplaymusic(hotsong,index)" :key="index" class="song-item">
           {{hotsong.name}}
         </div>
     </div>
@@ -19,6 +21,7 @@
 </template>
 <script>
 import scroll from '@/base/Scroll'
+import { mapActions } from 'vuex'
 export default {
   name: 'ListMusic',
   data () {
@@ -53,6 +56,14 @@ export default {
   methods: {
     getdata (vl) {
       this.posy = vl
+    },
+    inplaymusic (hotsong, index) {
+      this.playmusic({ list: this.song, index: index })
+      this.$root.$emit('sendid', hotsong.id)
+    },
+    ...mapActions(['playmusic']),
+    back () {
+      this.$router.back()
     }
   },
   watch: {
@@ -65,7 +76,6 @@ export default {
         zindex = 10
         this.$refs.img.style.paddingTop = 0
         this.$refs.img.style.height = 40 + 'px'
-        console.log(nvl)
       } else {
         this.$refs.img.style.paddingTop = 70 + '%'
         this.$refs.img.style.height = 0
@@ -97,18 +107,36 @@ export default {
   }
 .singer-descrtion{
     position: absolute;
-    left: 20px;
-    bottom: 50px;
+    left: 0;
+    top:0;
+    height: 40px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    .span1{
+       display: inline-block;
+       width: 40px;
+       z-index: 10;
+    }
+    .span2{
+     flex: 1 auto;
+     display: inline-block;
+     text-align: center;
+    }
 }
 .hotsong-list{
     position:absolute;
     width:100%;
     // overflow:hidden;
     right:0;
-    bottom:0
+    bottom:40px
 }
 .song-item{
-  height: 30px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-bottom: 1px solid #ccc;
 }
 .push-list{
   position: relative;
