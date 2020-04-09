@@ -97,7 +97,6 @@ export default {
     window.addEventListener('resize', () => {
       if (!this.slider) return
       this.setloopwidth()
-      this.initloop()
     })
   },
   activated () {
@@ -113,7 +112,6 @@ export default {
 <style lang="less" scoped>
 .scroll{
    min-height: 1px;
-   max-height: 300px;
    position: relative;
   .scroll-group{
     overflow: hidden;

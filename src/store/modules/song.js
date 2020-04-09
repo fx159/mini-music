@@ -32,6 +32,11 @@ const actions = {
     commit('SET_CURRENTINDEX', index)
     commit('SET_PLAYSONG', list[index])
     commit('SET_PLAY', true)
+  },
+  playnext: ({ commit, state }, { index, item }) => {
+    commit('SET_CURRENTINDEX', index)
+    commit('SET_PLAYSONG', state.songlist[index])
+    commit('SET_PLAY', item)
   }
 }
 

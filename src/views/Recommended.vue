@@ -23,7 +23,7 @@
     </div>
     <div class="recommend-music">
        <h2 class="recommend-title">最新音乐</h2>
-       <div v-for="(item, index) in recommendmusic" :key="`${index}+item`" class="music-item" @touchstart='hover' @touchend='hoverleave'>
+       <div v-for="(item, index) in recommendmusic" @click="playmusic" :key="`${index}+item`" class="music-item" @touchstart='hover' @touchend='hoverleave'>
          <div class="item-top">{{item.song.name}}
          <span v-show='item.song.alias.length' style="color:#888">({{item.song.alias[0]}})</span>
          </div>
@@ -81,6 +81,9 @@ export default {
         console.log(data)
         this.recommendmusic = data.result
       })
+    },
+    playmusic () {
+
     },
     // loadrecommend () {
     //   loadplayhot().then(data => {

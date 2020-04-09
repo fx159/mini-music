@@ -2,7 +2,6 @@ export function addclass (el, className) {
   if (hasclass(el, className)) {
     return
   }
-  console.log(1)
   const arr = el.className.split('')
   arr.push(className)
   el.className = arr.join('')

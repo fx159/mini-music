@@ -13,3 +13,17 @@ export const playmusic = (id) => {
     })
   })
 }
+
+export const loadmusicmsg = (ids) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: 'get',
+      params: { ids },
+      url: '/song/detail'
+    }).then(res => {
+      resolve(res.data)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
