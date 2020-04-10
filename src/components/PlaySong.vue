@@ -13,8 +13,14 @@
       <div class="full-img" :class="fullimg">
         <img  v-if="playsong.al" :src="playsong.al.picUrl" alt="" >
       </div>
+      <div class="full-progress" >
+        <div class="full-time">{{settime(currenttime)}}</div>
+        <progre :progress ="progress" ></progre>
+        <div class="full-time">{{settime(alltime)}}</div>
+
+      </div>
       <div class="full-tab">
-        <span>随机播放 {{settime(currenttime)}}|{{settime(alltime)}}</span>
+        <span>随机播放 </span>
         <span @click="playpremusic" :class="playcls">上一首</span>
         <span @click="playmusic" :class="playcls">
           <span v-show="!playing">播放</span>
@@ -35,6 +41,7 @@
   </div>
 </template>
 <script>
+import progre from '@/base/progress'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { playmusic, loadmusicmsg } from '@/api/song'
 export default {
@@ -57,7 +64,13 @@ export default {
     },
     playcls () {
       return this.ready ? '' : 'disable'
+    },
+    progress () {
+      return this.currenttime / this.alltime
     }
+  },
+  components: {
+    progre
   },
   methods: {
     ...mapActions({ playnext: 'playnext' }),
@@ -72,7 +85,6 @@ export default {
       // eslint-disable-next-line promise/param-names
       return new Promise((resolve, reject) => {
         playmusic(this.playsong.id).then(data => {
-          console.log(data)
           this.url = data.data[0].url
           resolve(this.$refs.audio)
         })
@@ -93,7 +105,6 @@ export default {
       if (!this.ready) {
         return
       }
-      console.log(3)
       this.setplay(!this.playing)
       this.show = !this.show
     },
@@ -104,20 +115,26 @@ export default {
       if (!this.ready) {
         return
       }
-      this.playnext({ index: this.currentindex + 1, item: true })
+      let index = this.currentindex
+      if (this.currentindex === this.songlist.length - 1) index = -1
+      this.playnext({ index: index + 1, item: true })
       this.ready = false
     },
     playpremusic () {
       if (!this.ready) {
         return
       }
-      this.playnext({ index: this.currentindex + 1, item: true })
+      let index = this.currentindex
+      if (this.currentindex === 0) {
+        index = this.songlist.length
+        console.log(this.currentindex)
+      }
+      this.playnext({ index: index - 1, item: true })
       this.ready = false
     },
     canplay () {
       this.ready = true
       this.alltime = this.$refs.audio.duration
-      console.log(this.$refs.audio.duration)
     },
     uptime (e) {
       this.currenttime = e.target.currentTime
@@ -177,6 +194,9 @@ export default {
           height: 100%;
           width: 40px;
         }
+        .span1{
+          line-height: 40px;
+        }
         .span2{
           flex: 1 auto;
           text-align: center;
@@ -202,6 +222,21 @@ export default {
           width: 100%;
           height: 100%;
         }
+      }
+      .full-progress{
+        height: 60px;
+        position: absolute;
+        width: 100%;
+        left: 0;
+        bottom: 80px;
+        display: flex;
+        align-items: center;
+      .full-time{
+        flex: 0 0 30px;
+      }
+      .full-mid{
+        flex-grow: 1;
+      }
       }
       .full-tab{
         position: absolute;

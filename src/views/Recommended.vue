@@ -140,7 +140,7 @@ export default {
      p{
        font-size:13px;
        overflow:hidden;
-       height:38px;
+       height:36px;
        display: -webkit-box;
        -webkit-box-orient: vertical;
        -webkit-line-clamp: 2;
