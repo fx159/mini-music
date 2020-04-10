@@ -15,7 +15,7 @@
       </div>
       <div class="full-progress" >
         <div class="full-time">{{settime(currenttime)}}</div>
-        <progre :progress ="progress" ></progre>
+        <progre :progress ="progress" @setprogr ='setprogr'></progre>
         <div class="full-time">{{settime(alltime)}}</div>
 
       </div>
@@ -127,7 +127,6 @@ export default {
       let index = this.currentindex
       if (this.currentindex === 0) {
         index = this.songlist.length
-        console.log(this.currentindex)
       }
       this.playnext({ index: index - 1, item: true })
       this.ready = false
@@ -153,6 +152,9 @@ export default {
         len++
       }
       return num
+    },
+    setprogr (val) {
+      this.$refs.audio.currentTime = this.$refs.audio.duration * val
     }
   },
   created () {

@@ -3,8 +3,8 @@
     <div class="in-progress" ref="progresstab">
       <div class="progress" ref="progress">
       </div>
-      <div class="progress-btn-wrapper" >
-        <div class="progress-btn" ref="progressbtn"></div>
+      <div class="progress-btn-wrapper" @touchstart.prevent='playstart' @touchmove.prevent ='playmove' @touchend ="playend">
+        <div class="progress-btn" ref="progressbtn" ></div>
       </div>
     </div>
   </div>
@@ -18,12 +18,42 @@ export default {
       default: 0
     }
   },
+  methods: {
+    playstart (e) {
+      this.touch.able = true
+      this.touch.startx = e.touches[0].pageX
+      this.touch.offsetleft = this.$refs.progress.clientWidth
+    },
+    playmove (e) {
+      if (!this.touch.able) return
+      const width = e.touches[0].pageX - this.touch.startx
+      const offsetwidth = Math.max(0, Math.min(this.$refs.progresstab.clientWidth, width + this.touch.offsetleft))
+      this.touch.width = width + this.touch.offsetleft
+      // offsetwidth = Math.max(0, width + this.touch.offsetleft)
+      this.$refs.progress.style.width = offsetwidth + 'px'
+      this.$refs.progressbtn.style.transform = `translateX(${offsetwidth}px)`
+    },
+    playend () {
+      this.touch.able = false
+      this.setprogress()
+    },
+    setprogress () {
+      const progress = this.touch.width / this.$refs.progresstab.clientWidth
+      this.$emit('setprogr', progress)
+    }
+  },
   watch: {
     progress (nvl) {
-      const width = this.$refs.progresstab.clientWidth * this.progress
-      this.$refs.progress.style.width = width + 'px'
-      this.$refs.progressbtn.style.transform = `translateX(${width}px)`
+      if (nvl > 0 && !this.touch.able) {
+        const width = this.$refs.progresstab.clientWidth * nvl
+        console.log(width, nvl)
+        this.$refs.progress.style.width = width + 'px'
+        this.$refs.progressbtn.style.transform = `translateX(${width}px)`
+      }
     }
+  },
+  created () {
+    this.touch = {}
   }
 }
 </script>
