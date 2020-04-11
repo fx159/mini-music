@@ -1,5 +1,5 @@
 <template>
-  <div class="progress-tab">
+  <div class="progress-tab" @click="changeprogress">
     <div class="in-progress" ref="progresstab">
       <div class="progress" ref="progress">
       </div>
@@ -28,7 +28,6 @@ export default {
       if (!this.touch.able) return
       const width = e.touches[0].pageX - this.touch.startx
       const offsetwidth = Math.max(0, Math.min(this.$refs.progresstab.clientWidth, width + this.touch.offsetleft))
-      this.touch.width = width + this.touch.offsetleft
       // offsetwidth = Math.max(0, width + this.touch.offsetleft)
       this.$refs.progress.style.width = offsetwidth + 'px'
       this.$refs.progressbtn.style.transform = `translateX(${offsetwidth}px)`
@@ -38,15 +37,20 @@ export default {
       this.setprogress()
     },
     setprogress () {
-      const progress = this.touch.width / this.$refs.progresstab.clientWidth
+      const progress = this.$refs.progress.clientWidth / this.$refs.progresstab.clientWidth
       this.$emit('setprogr', progress)
+    },
+    changeprogress (e) {
+      console.log(e.offsetX)
+      this.$refs.progress.style.width = e.offsetX + 'px'
+      this.$refs.progressbtn.style.transform = `translateX(${e.offsetX}px)`
+      this.setprogress()
     }
   },
   watch: {
     progress (nvl) {
       if (nvl > 0 && !this.touch.able) {
         const width = this.$refs.progresstab.clientWidth * nvl
-        console.log(width, nvl)
         this.$refs.progress.style.width = width + 'px'
         this.$refs.progressbtn.style.transform = `translateX(${width}px)`
       }

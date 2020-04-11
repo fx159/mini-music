@@ -25,7 +25,7 @@
         <span @click="playmusic" :class="playcls">
           <span v-show="!playing">播放</span>
           <span v-show="playing">暂停</span>
-          </span>
+        </span>
         <span @click="playnextmusic" :class="playcls">下一首</span>
         <span>收藏</span>
       </div>
@@ -34,7 +34,17 @@
    </transition>
    <transition name="miniscreen">
    <div class="mini-screen" v-show="!fullscreen" @click="letfullscreen">
-     {{currentindex}}
+     <div class="mini-img" :class="fullimg">
+        <img v-if="playsong.al" :src="playsong.al.picUrl" width="100%" alt="">
+     </div>
+     <div class="mini-font">
+        <div class="div1">{{playsong.name}}</div>
+        <div v-if="playsong.ar">{{playsong.ar[0].name}}</div>
+     </div>
+     <div class="mini-play" @click.stop="play">
+         <span v-show="!playing">播放</span>
+         <span v-show="playing">暂停</span>
+     </div>
    </div>
    </transition>
    <audio :src="url" ref="audio" @canplay="canplay"  @timeupdate="uptime"   ></audio>
@@ -155,6 +165,10 @@ export default {
     },
     setprogr (val) {
       this.$refs.audio.currentTime = this.$refs.audio.duration * val
+    },
+    play () {
+      this.setplay(!this.playing)
+      this.show = !this.show
     }
   },
   created () {
@@ -255,13 +269,44 @@ export default {
       }
     }
     .mini-screen{
-      height: @height;
+      height: 50px;
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
       z-index: 100;
-      background-color: green;
+      background-color: black;
+      color: @music-font;
+      font-size: 14px;
+      line-height: 50px;
+      display: flex;
+      padding: 4px 0;
+      box-sizing: border-box;
+      .mini-img{
+        width: 12%;
+        border-radius: 50%;
+        height: 100%;
+        &.play{
+          animation: rotate 20s linear infinite;
+        }
+        &.pause{
+          animation-play-state: paused;
+        }
+       img{
+         border-radius: 50%;
+       }
+      }
+      .mini-font{
+         display: flex;
+         flex-flow: column;
+         justify-content: center;
+           padding: 0 10px;
+           width: 68%;
+         div{
+          height: 20px;
+          line-height: 25px;
+         }
+      }
     }
     .fullscreen-enter-active, .fullscreen-leave-active{
       transition: all 1s;
