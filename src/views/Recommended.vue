@@ -27,10 +27,10 @@
          <div class="item-top">{{item.song.name}}
          <span v-show='item.song.alias.length' style="color:#888">({{item.song.alias[0]}})</span>
          </div>
-         <div class="item-bottom" style="color:#888">
+        <div class="item-bottom" style="color:#888">
         <span  v-for="(artist,index) in item.song.artists" :key="`${index}+artist`"><i v-show="index>0">/</i>{{artist.name}}</span>
          {{item.song.album.name}}
-          </div>
+        </div>
        </div>
     </div>
     </div>

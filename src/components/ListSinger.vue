@@ -19,8 +19,8 @@
   <div class="load-img">
       <load v-show="!singerlists.length"></load>
     </div>
-  <div class="singer-tip" ref="singertip" v-show="show" @touchstart ='gototop'>
-      ↑
+  <div class="singer-tip" ref="singertip" v-show="show" @click ='gototop'>
+      <span class="iconfont icon-huidaodingbu"></span>
   </div>
   </div>
 </template>
@@ -148,10 +148,13 @@ export default {
   position: fixed;
   bottom: 50px;
   right: 10px;
-  height: 20px;
-  width: 20px;
-  background-color: red;
+  height: 30px;
+  width: 30px;
   overflow: hidden;
   text-align: center;
+  .iconfont{
+    color: @music-font;
+    font-size: 26px;
+  }
 }
 </style>

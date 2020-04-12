@@ -4,7 +4,7 @@
     <div class="singer-img"  ref="img" :style="{'backgroundImage': `url(${img})`,backgroundSize:'cover',backgroundRepeat:'no-repeat'}">
       <!-- <img :src="artists.img1v1Url" alt="" width="100%"> -->
       <div class="singer-descrtion">
-        <span class="span1" @click="back">返回</span>
+        <span class="span1 iconfont icon-fanhui" @click="back"></span>
         <span class="span2">{{title}}</span>
       </div>
        <div class="filter"></div>
@@ -117,6 +117,11 @@ export default {
        display: inline-block;
        width: 40px;
        z-index: 10;
+       margin-left: 10px;
+    }
+    .iconfont{
+      font-size: 26px;
+      color: #ccc;
     }
     .span2{
      flex: 1 auto;

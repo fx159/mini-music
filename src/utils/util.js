@@ -22,3 +22,17 @@ export function getindex (el, name, value) {
     return el.getAttribute(name)
   }
 }
+
+export function shuffle (arr) {
+  for (let i = 0; i < arr.length; i++) {
+    const j = random(0, i)
+    const t = arr[i]
+    arr[i] = arr[j]
+    arr[j] = t
+  }
+  return arr
+}
+
+export function random (max, min) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}

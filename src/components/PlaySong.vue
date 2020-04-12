@@ -4,7 +4,7 @@
    <transition name="fullscreen">
    <div class="full-screen"  ref="fullscreen" v-show="fullscreen" >
       <div class="full-top">
-        <span class="span1"  @click="setminiscreen"> 返回</span>
+        <span class="span1 iconfont icon-fanhui"  @click="setminiscreen" > </span>
         <span class="span2">
           <div>{{playsong.name}}</div>
            <div v-if="playsong.ar">{{playsong.ar[0].name}}</div>
@@ -20,14 +20,14 @@
 
       </div>
       <div class="full-tab">
-        <span>随机播放 </span>
-        <span @click="playpremusic" :class="playcls">上一首</span>
+        <span :class="modeicon" class="iconfont iconfont" @click="changgemode"></span>
+        <span @click="playpremusic" class="iconfont icon-shangyishou" :class="playcls"></span>
         <span @click="playmusic" :class="playcls">
-          <span v-show="!playing">播放</span>
-          <span v-show="playing">暂停</span>
+          <span v-show="!playing" class="iconfont icon-play_icon"></span>
+          <span v-show="playing" class="iconfont icon-zanting"></span>
         </span>
-        <span @click="playnextmusic" :class="playcls">下一首</span>
-        <span>收藏</span>
+        <span @click="playnextmusic" class="iconfont icon-xiayishou" :class="playcls"></span>
+        <span class="iconfont icon-shoucang"></span>
       </div>
       <div class="full-play"></div>
    </div>
@@ -42,18 +42,20 @@
         <div v-if="playsong.ar">{{playsong.ar[0].name}}</div>
      </div>
      <div class="mini-play" @click.stop="play">
-         <span v-show="!playing">播放</span>
-         <span v-show="playing">暂停</span>
+         <span v-show="!playing" class="iconfont icon-play_icon"></span>
+         <span v-show="playing" class="iconfont icon-zanting"></span>
      </div>
    </div>
    </transition>
-   <audio :src="url" ref="audio" @canplay="canplay"  @timeupdate="uptime"   ></audio>
+   <audio :src="url" ref="audio" @ended="end" @canplay="canplay"  @timeupdate="uptime"   ></audio>
   </div>
 </template>
 <script>
 import progre from '@/base/progress'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { playmusic, loadmusicmsg } from '@/api/song'
+import { playmode } from '@/utils/config'
+import { shuffle } from '@/utils/util'
 export default {
   name: 'PlaySong',
   data () {
@@ -67,7 +69,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['songlist', 'fullscreen', 'playsong', 'playing', 'currentindex']),
+    ...mapGetters(['songlist', 'fullscreen', 'playsong', 'playing', 'currentindex', 'mode', 'sequenlist']),
     // eslint-disable-next-line vue/return-in-computed-property
     fullimg () {
       return this.playing ? 'play' : 'play pause'
@@ -77,6 +79,9 @@ export default {
     },
     progress () {
       return this.currenttime / this.alltime
+    },
+    modeicon () {
+      return this.mode === playmode.sequential ? 'icon-suijibofang' : this.mode === playmode.loop ? 'icon-shunxubofang' : 'icon-danquxunhuan'
     }
   },
   components: {
@@ -84,7 +89,7 @@ export default {
   },
   methods: {
     ...mapActions({ playnext: 'playnext' }),
-    ...mapMutations({ setfullscreen: 'SET_FULLSCREEN', setplay: 'SET_PLAY' }),
+    ...mapMutations({ setfullscreen: 'SET_FULLSCREEN', setplay: 'SET_PLAY', setmode: 'SET_MODE', setsonglist: 'SET_SONGLIST', setcurrentindex: 'SET_CURRENTINDEX' }),
     setminiscreen () {
       this.setfullscreen(false)
     },
@@ -169,12 +174,38 @@ export default {
     play () {
       this.setplay(!this.playing)
       this.show = !this.show
+    },
+    changgemode () {
+      const mode = (this.mode + 1) % 3
+      this.setmode(mode)
+      let list = null
+      if (this.mode === playmode.sequential) {
+        list = shuffle(this.sequenlist)
+      } else {
+        list = this.songlist
+      }
+      console.log(list)
+      this.setsonglist(list)
+      this.keepplaysong(list)
+    },
+    keepplaysong (list) {
+      const index = list.findIndex(item => {
+        return item.id === this.playsong.id
+      })
+      this.setcurrentindex(index)
+    },
+    end () {
+      if (this.mode === playmode.random) {
+        this.$refs.audio.currentTime = 0
+        this.$refs.audio.play()
+      } else {
+        this.playnextmusic()
+      }
     }
   },
-  created () {
-  },
   watch: {
-    playsong (nvl) {
+    playsong (nvl, ovl) {
+      if (nvl.id === ovl.id) return
       this.music()
       this.loadmusicmsg()
     },
@@ -209,6 +240,9 @@ export default {
           display: inline-block;
           height: 100%;
           width: 40px;
+        }
+        .iconfont{
+          font-size: 26px;
         }
         .span1{
           line-height: 40px;
@@ -266,6 +300,9 @@ export default {
           text-align: center;
           margin-left: 8px;
         }
+        .iconfont{
+          font-size: 27px;
+        }
       }
     }
     .mini-screen{
@@ -306,6 +343,11 @@ export default {
           height: 20px;
           line-height: 25px;
          }
+      }
+      .mini-play{
+        .iconfont{
+          font-size: 26px;
+        }
       }
     }
     .fullscreen-enter-active, .fullscreen-leave-active{

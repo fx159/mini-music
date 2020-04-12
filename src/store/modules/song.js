@@ -1,10 +1,13 @@
+import { playmode } from '@/utils/config'
 
 const state = {
   songlist: [],
+  sequenlist: [],
   fullscreen: false,
   currentindex: '',
   playsong: '',
-  playing: 'false'
+  playing: 'false',
+  mode: playmode.loop
 }
 
 const mutations = {
@@ -22,6 +25,12 @@ const mutations = {
   },
   SET_PLAY: (state, item) => {
     state.playing = item
+  },
+  SET_MODE: (state, item) => {
+    state.mode = item
+  },
+  SET_SEQUENLIST: (state, item) => {
+    state.sequenlist = item
   }
 }
 
@@ -29,6 +38,7 @@ const actions = {
   playmusic: ({ commit, state }, { list, index }) => {
     commit('SET_SONGLIST', list)
     commit('SET_FULLSCREEN', true)
+    commit('SET_SEQUENLIST', list)
     commit('SET_CURRENTINDEX', index)
     commit('SET_PLAYSONG', list[index])
     commit('SET_PLAY', true)
