@@ -182,7 +182,7 @@ export default {
       if (this.mode === playmode.sequential) {
         list = shuffle(this.sequenlist)
       } else {
-        list = this.songlist
+        list = this.sequenlist
       }
       console.log(list)
       this.setsonglist(list)

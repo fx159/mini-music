@@ -24,13 +24,14 @@ export function getindex (el, name, value) {
 }
 
 export function shuffle (arr) {
-  for (let i = 0; i < arr.length; i++) {
+  const newarr = arr.slice()
+  for (let i = 0; i < newarr.length; i++) {
     const j = random(0, i)
-    const t = arr[i]
-    arr[i] = arr[j]
-    arr[j] = t
+    const t = newarr[i]
+    newarr[i] = newarr[j]
+    newarr[j] = t
   }
-  return arr
+  return newarr
 }
 
 export function random (max, min) {
