@@ -7,17 +7,23 @@
         <span class="span1 iconfont icon-fanhui"  @click="setminiscreen" > </span>
         <span class="span2">
           <div>{{playsong.name}}</div>
-           <div v-if="playsong.ar">{{playsong.ar[0].name}}</div>
+           <div v-if="song[0]" style="display:flex; justify-content: center;overflow:hidden"><span style="height:20px;white-space:nowrap;width:100px" v-for="(names, index) in song[0].ar" :key="`${index} + name`">{{names.name}}</span></div>
         </span>
       </div>
-      <div class="full-img" :class="fullimg">
-        <img  v-if="playsong.al" :src="playsong.al.picUrl" alt="" >
+      <div class="full-img" :class="fullimg" v-show="imgshow"  @click="showimgs">
+        <img v-if='song[0]' :src="song[0].al.picUrl" alt="" >
       </div>
+      <scroll v-show="!imgshow" class="full-txt">
+        <div  @click="showimgs"  >
+        <div v-for="(words,index) in lyricwords" :key="index+'words'" >
+          {{words.txt}}
+        </div>
+        </div>
+      </scroll>
       <div class="full-progress" >
         <div class="full-time">{{settime(currenttime)}}</div>
         <progre :progress ="progress" @setprogr ='setprogr'></progre>
         <div class="full-time">{{settime(alltime)}}</div>
-
       </div>
       <div class="full-tab">
         <span :class="modeicon" class="iconfont iconfont" @click="changgemode"></span>
@@ -27,7 +33,7 @@
           <span v-show="playing" class="iconfont icon-zanting"></span>
         </span>
         <span @click="playnextmusic" class="iconfont icon-xiayishou" :class="playcls"></span>
-        <span class="iconfont icon-shoucang"></span>
+        <span class="iconfont icon-shoucang " :class="isactive"></span>
       </div>
       <div class="full-play"></div>
    </div>
@@ -53,9 +59,11 @@
 <script>
 import progre from '@/base/progress'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { playmusic, loadmusicmsg } from '@/api/song'
+import { playmusic, loadmusicmsg, loadsongwords } from '@/api/song'
 import { playmode } from '@/utils/config'
 import { shuffle } from '@/utils/util'
+import lyric from 'lyric-parser'
+import scroll from '@/base/Scroll'
 export default {
   name: 'PlaySong',
   data () {
@@ -63,9 +71,12 @@ export default {
       id: '',
       url: '',
       show: true,
+      song: '',
       ready: false,
       alltime: 0,
-      currenttime: 0
+      currenttime: 0,
+      lyricwords: '',
+      imgshow: true
     }
   },
   computed: {
@@ -82,12 +93,28 @@ export default {
     },
     modeicon () {
       return this.mode === playmode.sequential ? 'icon-suijibofang' : this.mode === playmode.loop ? 'icon-shunxubofang' : 'icon-danquxunhuan'
+    },
+    // eslint-disable-next-line vue/return-in-computed-property
+    picUrl () {
+      // eslint-disable-next-line space-in-parens
+      if ( this.playsong.al.picUrl.length > 0 ) {
+        return this.playsong.al.picUrl
+      } else {
+        return this.playsong.picUrl
+      }
+    },
+    isactive () {
+      return this.playing ? 'active' : ''
     }
   },
   components: {
-    progre
+    progre,
+    scroll
   },
   methods: {
+    showimgs () {
+      this.imgshow = !this.imgshow
+    },
     ...mapActions({ playnext: 'playnext' }),
     ...mapMutations({ setfullscreen: 'SET_FULLSCREEN', setplay: 'SET_PLAY', setmode: 'SET_MODE', setsonglist: 'SET_SONGLIST', setcurrentindex: 'SET_CURRENTINDEX' }),
     setminiscreen () {
@@ -105,10 +132,19 @@ export default {
         })
       })
     },
+    loadmusicword () {
+      loadsongwords(this.playsong.id).then(data => {
+        // eslint-disable-next-line new-cap
+        this.word = new lyric(data.lrc.lyric)
+        this.lyricwords = this.word.lines
+        console.log(this.lyricwords)
+      })
+    },
     loadmusicmsg () {
       const id = this.playsong.id
       loadmusicmsg(id).then(data => {
-        console.log(data)
+        this.song = data.songs
+        console.log(this.song)
       })
     },
     music () {
@@ -208,6 +244,7 @@ export default {
       if (nvl.id === ovl.id) return
       this.music()
       this.loadmusicmsg()
+      this.loadmusicword()
     },
     playing (nvl) {
       const audio = this.$refs.audio
@@ -252,12 +289,25 @@ export default {
           text-align: center;
         }
       }
+      .full-txt{
+        position: absolute;
+        overflow: hidden;
+        top:70px;
+        text-align: center;
+        width: 100%;
+        right: 0;
+        bottom: 120px;
+      }
       .full-img{
         position: absolute;
         height: 55%;
         width: 100%;
         border-radius: 50%;
         margin-top: 60px;
+        overflow: hidden;
+        div{
+          height: 20px;
+        }
         &.play{
           animation: rotate 20s linear infinite;
         }
@@ -303,6 +353,11 @@ export default {
         .iconfont{
           font-size: 27px;
         }
+      }
+    }
+    .icon-shoucang{
+      &.active{
+        color: red;
       }
     }
     .mini-screen{

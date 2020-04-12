@@ -23,7 +23,7 @@
     </div>
     <div class="recommend-music">
        <h2 class="recommend-title">最新音乐</h2>
-       <div v-for="(item, index) in recommendmusic" @click="playmusic" :key="`${index}+item`" class="music-item" @touchstart='hover' @touchend='hoverleave'>
+       <div v-for="(item, index) in recommendmusic" @click="playnewmusic(item,index)" :key="`${index}+item`" class="music-item" @touchstart='hover' @touchend='hoverleave'>
          <div class="item-top">{{item.song.name}}
          <span v-show='item.song.alias.length' style="color:#888">({{item.song.alias[0]}})</span>
          </div>
@@ -44,6 +44,7 @@ import Loop from '@/base/Loop'
 import Scroll from '@/base/Scroll'
 import load from '@/base/loading.vue'
 import { addclass } from '@/utils/util'
+import { mapActions } from 'vuex'
 export default {
   name: 'Recommended',
   data () {
@@ -55,6 +56,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['playmusic']),
     hover (e) {
       if (e.target.className === 'music-item') {
         // console.log(e.targetTouches[0].pageY)
@@ -82,8 +84,8 @@ export default {
         this.recommendmusic = data.result
       })
     },
-    playmusic () {
-
+    playnewmusic (item, index) {
+      this.playmusic({ list: this.recommendmusic, index: index })
     },
     // loadrecommend () {
     //   loadplayhot().then(data => {
