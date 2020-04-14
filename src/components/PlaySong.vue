@@ -141,9 +141,12 @@ export default {
           this.lyricwords.play()
           console.log(6)
         }
+      }).catch(() => {
+        this.lyricwords = ''
+        this.currentnum = 0
       })
     },
-    lyricword (linenum, txt) {
+    lyricword (linenum) {
       if (!this.playing) return
       this.currentnum = linenum.lineNum
       if (linenum.lineNum > 6) {
