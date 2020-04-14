@@ -7,15 +7,15 @@
         <span class="span1 iconfont icon-fanhui"  @click="setminiscreen" > </span>
         <span class="span2">
           <div>{{playsong.name}}</div>
-           <div v-if="song[0]" style="display:flex; justify-content: center;overflow:hidden"><span style="height:20px;white-space:nowrap;width:100px" v-for="(names, index) in song[0].ar" :key="`${index} + name`">{{names.name}}</span></div>
+           <div v-if="song[0]" style="display:flex; justify-content: center;overflow:hidden"><span style="height:20px;white-space:nowrap;width:80px" v-for="(names, index) in song[0].ar" :key="`${index} + name`">{{names.name}}</span></div>
         </span>
       </div>
       <div class="full-img" :class="fullimg" v-show="imgshow"  @click="showimgs">
         <img v-if='song[0]' :src="song[0].al.picUrl" alt="" >
       </div>
-      <scroll v-show="!imgshow" class="full-txt">
+      <scroll v-show="!imgshow" class="full-txt" :data ='lyricwords.lines' ref="lyricwords">
         <div  @click="showimgs"  >
-        <div v-for="(words,index) in lyricwords" :key="index+'words'" >
+        <div v-for="(words,index) in lyricwords.lines" ref="lines" :key="index+'words'" class="full-words" :class="{'current': currentnum === index}">
           {{words.txt}}
         </div>
         </div>
@@ -41,11 +41,11 @@
    <transition name="miniscreen">
    <div class="mini-screen" v-show="!fullscreen" @click="letfullscreen">
      <div class="mini-img" :class="fullimg">
-        <img v-if="playsong.al" :src="playsong.al.picUrl" width="100%" alt="">
+        <img v-if='song[0]' :src="song[0].al.picUrl" width="100%" alt="">
      </div>
      <div class="mini-font">
         <div class="div1">{{playsong.name}}</div>
-        <div v-if="playsong.ar">{{playsong.ar[0].name}}</div>
+        <div v-if="song[0]" style="display:flex; overflow:hidden"><span style="height:20px;white-space:nowrap" v-for="(names, index) in song[0].ar" :key="`${index} + name`"><span v-if="index>0">/</span> {{names.name}}</span></div>
      </div>
      <div class="mini-play" @click.stop="play">
          <span v-show="!playing" class="iconfont icon-play_icon"></span>
@@ -76,7 +76,8 @@ export default {
       alltime: 0,
       currenttime: 0,
       lyricwords: '',
-      imgshow: true
+      imgshow: true,
+      currentnum: 0
     }
   },
   computed: {
@@ -135,10 +136,22 @@ export default {
     loadmusicword () {
       loadsongwords(this.playsong.id).then(data => {
         // eslint-disable-next-line new-cap
-        this.word = new lyric(data.lrc.lyric)
-        this.lyricwords = this.word.lines
-        console.log(this.lyricwords)
+        this.lyricwords = new lyric(data.lrc.lyric, this.lyricword)
+        if (this.playing) {
+          this.lyricwords.play()
+          console.log(6)
+        }
       })
+    },
+    lyricword (linenum, txt) {
+      if (!this.playing) return
+      this.currentnum = linenum.lineNum
+      if (linenum.lineNum > 6) {
+        const lines = this.$refs.lines[linenum.lineNum - 6]
+        this.$refs.lyricwords.scrolltoelement(lines, 500)
+      } else {
+        this.$refs.lyricwords.scrollto(0, 0, 500)
+      }
     },
     loadmusicmsg () {
       const id = this.playsong.id
@@ -205,7 +218,9 @@ export default {
       return num
     },
     setprogr (val) {
-      this.$refs.audio.currentTime = this.$refs.audio.duration * val
+      const currttime = this.$refs.audio.duration * val
+      this.$refs.audio.currentTime = currttime
+      if (this.lyricwords) this.lyricwords.seek(currttime * 1000)
     },
     play () {
       this.setplay(!this.playing)
@@ -234,6 +249,7 @@ export default {
       if (this.mode === playmode.random) {
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
+        if (this.lyricwords) this.lyricwords.seek(0)
       } else {
         this.playnextmusic()
       }
@@ -245,6 +261,7 @@ export default {
       this.music()
       this.loadmusicmsg()
       this.loadmusicword()
+      if (this.lyricwords) this.lyricwords.stop()
     },
     playing (nvl) {
       const audio = this.$refs.audio
@@ -297,6 +314,12 @@ export default {
         width: 100%;
         right: 0;
         bottom: 120px;
+        .full-words{
+          padding: 6px 0;
+          &.current{
+            color: yellow;
+          }
+        }
       }
       .full-img{
         position: absolute;

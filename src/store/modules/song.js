@@ -7,7 +7,8 @@ const state = {
   currentindex: '',
   playsong: '',
   playing: 'false',
-  mode: playmode.loop
+  mode: playmode.loop,
+  collect: []
 }
 
 const mutations = {
