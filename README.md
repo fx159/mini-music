@@ -21,4 +21,6 @@ git submodule update --init --recursive
 3.better-scroll:content内容不超过warrper内容时页面无法滚动，并且content需要定义高度
 4.歌手歌单组件实现上拉图片功能，上拉一定高度后图片固定，主要利用better-scroll的滚动时获取到滚动内容滚动的位置来实现
 该功能
+5. 歌手歌单组件和排行榜歌单组件进入播放器组件时因为传入的歌单数据结构不同，导致vuex管理的状态无法获取到具体的歌曲数据，
+通过再mutations中判断传入的具体歌曲数据是否存在songs[0]来获得具体传入的歌曲数据结构
 ```
