@@ -22,7 +22,12 @@ const mutations = {
     state.currentindex = item
   },
   SET_PLAYSONG: (state, item) => {
-    state.playsong = item
+    console.log(item)
+    if (item.songs) {
+      state.playsong = item.songs[0]
+    } else {
+      state.playsong = item
+    }
   },
   SET_PLAY: (state, item) => {
     state.playing = item
@@ -32,11 +37,14 @@ const mutations = {
   },
   SET_SEQUENLIST: (state, item) => {
     state.sequenlist = item
+  },
+  SET_COLLECT: (state, item) => {
+    state.collect = item
   }
 }
 
 const actions = {
-  playmusic: ({ commit, state }, { list, index }) => {
+  playmusic: ({ commit, state }, { list, index, playsong }) => {
     commit('SET_SONGLIST', list)
     commit('SET_FULLSCREEN', true)
     commit('SET_SEQUENLIST', list)

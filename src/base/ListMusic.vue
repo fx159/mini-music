@@ -13,7 +13,7 @@
     <scroll class="hotsong-list" ref="list" :data ="song" @scoll="getdata">
       <div >
         <div v-for="(hotsong, index) in song" @click="inplaymusic(hotsong,index)" :key="index" class="song-item">
-          {{hotsong.name}}
+          {{hotsong.name||hotsong.songs[0].name}}
         </div>
     </div>
     </scroll>
@@ -58,8 +58,11 @@ export default {
       this.posy = vl
     },
     inplaymusic (hotsong, index) {
+      console.log(this.$route.path)
       this.playmusic({ list: this.song, index: index })
-      this.$root.$emit('sendid', hotsong.id)
+      console.log(hotsong)
+      // const id = hotsong.id || hotsong.songs[0].id
+      // this.$root.$emit('sendid', id)
     },
     ...mapActions(['playmusic']),
     back () {

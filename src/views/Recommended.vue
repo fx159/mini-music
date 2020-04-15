@@ -17,8 +17,10 @@
     </div>
     <div class="recommend-list">
       <div v-for="(list,index) in recommendlist" :key="`${index}+list`" class="list-item">
+        <router-link :to="{name:'recommendedlist',params:{id:list.id}}" tag="div">
         <img v-lazy="list.picUrl" alt="">
          <p style="">{{list.name}}</p>
+         </router-link>
       </div>
     </div>
     <div class="recommend-music">
@@ -36,6 +38,9 @@
     </div>
     </Scroll>
     <div class="load-img"><load v-show="!recommendmusic.length"></load></div>
+    <transition name='musiclist'>
+    <router-view/>
+    </transition>
   </div>
 </template>
 <script>
@@ -210,4 +215,10 @@ export default {
   display: flex;
   position: relative;
 }
+.musiclist-enter-active, .musiclist-leave-active{
+   transition: all 1s ;
+ }
+ .musiclist-enter, .musiclist-leave-to{
+   transform: translate3d(100%,0,0);
+ }
 </style>

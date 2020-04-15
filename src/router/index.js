@@ -11,12 +11,22 @@ const routes = [
   {
     path: '/recommended',
     name: 'Recommended',
-    component: () => import('@/views/Recommended.vue')
+    component: () => import('@/views/Recommended.vue'),
+    children: [{
+      path: ':id',
+      name: 'recommendedlist',
+      component: () => import('@/components/RecommendList')
+    }]
   },
   {
     path: '/ranking',
     name: 'Ranking',
-    component: () => import('@/views/Ranking.vue')
+    component: () => import('@/views/Ranking.vue'),
+    children: [{
+      path: ':id',
+      name: 'ranklist',
+      component: () => import('@/components/RankList')
+    }]
   },
   {
     path: '/search',

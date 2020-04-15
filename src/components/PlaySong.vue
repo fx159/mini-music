@@ -96,14 +96,6 @@ export default {
       return this.mode === playmode.sequential ? 'icon-suijibofang' : this.mode === playmode.loop ? 'icon-shunxubofang' : 'icon-danquxunhuan'
     },
     // eslint-disable-next-line vue/return-in-computed-property
-    picUrl () {
-      // eslint-disable-next-line space-in-parens
-      if ( this.playsong.al.picUrl.length > 0 ) {
-        return this.playsong.al.picUrl
-      } else {
-        return this.playsong.picUrl
-      }
-    },
     isactive () {
       return this.playing ? 'active' : ''
     }
@@ -158,6 +150,7 @@ export default {
     },
     loadmusicmsg () {
       const id = this.playsong.id
+      console.log(id)
       loadmusicmsg(id).then(data => {
         this.song = data.songs
         console.log(this.song)
