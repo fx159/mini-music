@@ -13,7 +13,8 @@
     <scroll class="hotsong-list" ref="list" :data ="song" @scoll="getdata">
       <div >
         <div v-for="(hotsong, index) in song" @click="inplaymusic(hotsong,index)" :key="index" class="song-item">
-          {{hotsong.name||hotsong.songs[0].name}}
+          <div>{{hotsong.name||hotsong.songs[0].name}}</div>
+           <!-- <div>{{hotsong.songs[0].ar[0].name}}</div> -->
         </div>
     </div>
     </scroll>
@@ -44,6 +45,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.song)
     this.minheight = -this.$refs.img.clientHeight + 40
     this.imgheight = this.$refs.img.clientHeight
     this.$nextTick(() => {
