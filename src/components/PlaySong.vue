@@ -7,7 +7,7 @@
         <span class="span1 iconfont icon-fanhui"  @click="setminiscreen" > </span>
         <span class="span2">
           <div>{{playsong.name}}</div>
-           <div v-if="song[0]" style="display:flex; justify-content: center;overflow:hidden"><span style="height:20px;white-space:nowrap;width:80px" v-for="(names, index) in song[0].ar" :key="`${index} + name`">{{names.name}}</span></div>
+           <div v-if="song[0]" style="display:flex; justify-content: center;overflow:hidden"><span style="height:20px;white-space:nowrap;width:80px;" v-for="(names, index) in song[0].ar" :key="`${index} + name`">{{names.name}}</span></div>
         </span>
       </div>
       <div class="full-img" :class="fullimg" v-show="imgshow"  @click="showimgs">
@@ -45,11 +45,17 @@
      </div>
      <div class="mini-font">
         <div class="div1">{{playsong.name}}</div>
-        <div v-if="song[0]" style="display:flex; overflow:hidden"><span style="height:20px;white-space:nowrap" v-for="(names, index) in song[0].ar" :key="`${index} + name`"><span v-if="index>0">/</span> {{names.name}}</span></div>
+        <div v-if="song[0]" style="display:flex; overflow:hidden"><span style="height:20px;white-space:nowrap" v-for="(names, index) in song[0].ar" :key="`${index} + name`"><span v-if="index>0">/</span> {{names.name}}</span><span>{{settime(currenttime)}}/{{settime(alltime)}}</span></div>
+     </div>
+    <div class="mini-play" @click.stop="playpremusic">
+         <span  class="iconfont icon-shangyishou"></span>
      </div>
      <div class="mini-play" @click.stop="play">
          <span v-show="!playing" class="iconfont icon-play_icon"></span>
          <span v-show="playing" class="iconfont icon-zanting"></span>
+     </div>
+     <div class="mini-play" @click.stop="playnextmusic">
+         <span  class="iconfont icon-xiayishou"></span>
      </div>
    </div>
    </transition>
@@ -286,6 +292,7 @@ export default {
         display: flex;
         padding: 10px 0;
         border-bottom: 1px solid ;
+        overflow: hidden;
         span{
           display: inline-block;
           height: 100%;

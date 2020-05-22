@@ -5,9 +5,11 @@
     <input type="text" v-model="query"  :placeholder="keywords">
     <span v-show="query" @click="clear">x</span>
   </div>
-  <div class="search-list">
-    <ul>
-        <li v-for="(list,index) in lists " :key="index">
+   <Suggest :query='query' @query ='clearquery'></Suggest>
+  <div class="search-list" v-show="!query">
+    <div>热门搜索：</div>
+    <ul class="list-item">
+        <li v-for="(list,index) in lists " :key="index" class="item" @click="setquery(list)">
           {{list.first}}
         </li>
     </ul>
@@ -15,7 +17,8 @@
 </div>
 </template>
 <script>
-import { loadserachlist } from '@/api/serach'
+import Suggest from '@/components/Suggest'
+import { loadserachhot } from '@/api/serach'
 export default {
   name: 'Search',
   data () {
@@ -25,15 +28,24 @@ export default {
       lists: ''
     }
   },
+  components: {
+    Suggest
+  },
   methods: {
     clear () {
       this.query = ''
     },
     serach () {
-      loadserachlist().then(data => {
+      loadserachhot().then(data => {
         console.log(data)
         this.lists = data.result.hots
       })
+    },
+    setquery (list) {
+      this.query = list.first
+    },
+    clearquery (query) {
+      this.query = query
     }
   },
   watch: {
@@ -57,11 +69,28 @@ export default {
   .search-input{
    width: 100%;
    height: 30px;
+   position: relative;
    text-align: center;
    padding: 10px;
    input{
-     width: 80%;
+     width: 70%;
    }
+  }
+  .search-list{
+    width: 100%;
+    height: 100%;
+    .list-item{
+       padding-left: 0;
+       list-style: none;
+      .item{
+          float: left;
+          margin-left: 18px;
+          margin-top: 10px;
+          box-sizing: border-box;
+          border: 1px #ccc solid;
+          border-radius: 10px;
+      }
+    }
   }
 }
 </style>
